@@ -51,10 +51,10 @@ const Home = () => {
   const { data: getRaceYear } = useQuery(GetRaceYearDocument);
   const [searchParams, setSearchParams] = useSearchParams({
     page: "1",
-    size: "10",
+    size: "30",
     keyword: "",
   });
-  const size = Number(searchParams.get("size") ?? "10");
+  const size = Number(searchParams.get("size") ?? "30");
   const page = Number(searchParams.get("page") ?? "1");
   const keyword = searchParams.get("keyword")?.trim();
   const raceYear = Number(searchParams.get("raceYear") ?? "2023");
