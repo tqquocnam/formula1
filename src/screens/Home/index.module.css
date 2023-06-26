@@ -1,10 +1,28 @@
-.cardContainer {
+.container {
+    padding: 12px 50px 24px;
+    background-color: #f9fafb;
+}
+
+.card {
     padding: 16px;
     background-color: #fff;
     border-radius: 8px;
     box-shadow: 0px 2px 4px rgba(33, 43, 54, 0.08);
+}
 
-    /* &.high-light {
-        box-shadow: rgb(248, 184, 206) 0px 4px 8px -2px, rgb(247, 178, 202) 0px 0px 0px 1px;
-    } */
+.title {
+    font-size: 600;
+    color: #E10600;
+    text-transform: uppercase;
+}
+
+.label {
+    padding: 0 6px;
+    color: #919EAB
+}
+
+.captionTable {
+    text-align: start;
+    padding: 0 12px;
+    color: #E10600;
 }

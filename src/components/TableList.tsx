@@ -1,24 +1,30 @@
-import { Table, TableColumnsType } from "antd";
+import {
+  Table,
+  TableColumnsType,
+  TablePaginationConfig,
+  Typography,
+} from "antd";
 import { GetRaceResultsQuery } from "../screens/Home/index.generated";
+import { FC, ReactNode } from "react";
 
-const TableList = ({
+interface TableListProps {
+  data: GetRaceResultsQuery["race_results"][number];
+  loading?: boolean;
+  paginationConfig: TablePaginationConfig;
+  title: ReactNode;
+}
+const TableList: FC<TableListProps> = ({
   data,
   loading,
-}: {
-  data: GetRaceResultsQuery["race_results"];
-  loading: boolean;
+  paginationConfig,
+  title,
 }) => {
   const columnSchema: TableColumnsType<
     GetRaceResultsQuery["race_results"][number]
   > = [
     {
-      title: "YEAR",
-      width: "10%",
-      dataIndex: "year",
-    },
-    {
       title: "GRAND PRIX",
-      width: "10%",
+      width: "20%",
       dataIndex: "venue",
     },
     {
@@ -28,12 +34,12 @@ const TableList = ({
     },
     {
       title: "WINNER",
-      width: "10%",
+      width: "20%",
       dataIndex: "winner",
     },
     {
       title: "CAR",
-      width: "10%",
+      width: "20%",
       dataIndex: "car",
     },
     {
@@ -49,10 +55,23 @@ const TableList = ({
   ];
   return (
     <Table
-      loading={loading}
       showHeader
+      caption={
+        <Typography.Title
+          level={2}
+          style={{
+            textAlign: "start",
+            padding: "0 12px",
+            color: "#E10600",
+          }}
+        >
+          {title}
+        </Typography.Title>
+      }
+      loading={loading}
       columns={columnSchema}
       dataSource={data}
+      pagination={paginationConfig}
     />
   );
 };

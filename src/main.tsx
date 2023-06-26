@@ -1,8 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import App from "./App.tsx";
-import "./index.css";
-// import { ApolloProvider } from "@apollo/client";
 import createApolloClient from "./services/apolloClientService.tsx";
 import { BrowserRouter } from "react-router-dom";
 import { ApolloProvider } from "@apollo/client";

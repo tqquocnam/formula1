@@ -3,28 +3,21 @@ import {
   Row,
   Select,
   Space,
-  Table,
-  TableColumnsType,
+  TablePaginationConfig,
   Typography,
+  Input,
+  Image,
 } from "antd";
-import Search from "antd/es/input/Search";
-import {
-  Bar,
-  BarChart,
-  CartesianGrid,
-  Line,
-  LineChart,
-  XAxis,
-  YAxis,
-} from "recharts";
-import styles from "./index.module.css";
+
 import { gql, useQuery } from "@apollo/client";
-import {
-  GetRaceResultsDocument,
-  GetRaceResultsQuery,
-  GetRaceYearDocument,
-} from "./index.generated";
+import { GetRaceResultsDocument, GetRaceYearDocument } from "./index.generated";
 import TableList from "../../components/TableList";
+import { useSearchParams } from "react-router-dom";
+import { debounce } from "lodash";
+import { RaceResultsBoolExp } from "../../sdk/gql/types";
+import Formula1Icon from "../../assets/icons/Formula1Icon.png";
+import LapsChart from "../../components/LapsChart";
+import styles from "./index.module.css";
 
 gql`
   query getRaceYear {
@@ -32,8 +25,12 @@ gql`
       year
     }
   }
-  query getRaceResults {
-    race_results {
+  query getRaceResults(
+    $where: race_results_bool_exp!
+    $limit: Int
+    $offset: Int
+  ) {
+    race_results(where: $where, limit: $limit, offset: $offset) {
       car
       date
       time
@@ -42,91 +39,150 @@ gql`
       year
       laps
     }
+    race_results_aggregate(where: $where) {
+      aggregate {
+        count
+      }
+    }
   }
 `;
 
 const Home = () => {
   const { data: getRaceYear } = useQuery(GetRaceYearDocument);
+  const [searchParams, setSearchParams] = useSearchParams({
+    page: "1",
+    size: "10",
+    keyword: "",
+  });
+  const size = Number(searchParams.get("size") ?? "10");
+  const page = Number(searchParams.get("page") ?? "1");
+  const keyword = searchParams.get("keyword")?.trim();
+  const raceYear = Number(searchParams.get("raceYear") ?? "2023");
 
-  const { loading, data } = useQuery(GetRaceResultsDocument);
+  let where: RaceResultsBoolExp = {};
+
+  if (keyword !== null) {
+    where = {
+      ...where,
+      _or: [
+        { winner: keyword !== "" ? { _ilike: `%${keyword}%` } : undefined },
+        { venue: keyword !== "" ? { _ilike: `%${keyword}%` } : undefined },
+        { car: keyword !== "" ? { _ilike: `%${keyword}%` } : undefined },
+      ],
+    };
+  }
+
+  if (raceYear !== null) {
+    where = {
+      ...where,
+      year: { _eq: raceYear },
+    };
+  }
+  const { loading, data } = useQuery(GetRaceResultsDocument, {
+    variables: {
+      where: where,
+      limit: size,
+      offset: (page - 1) * size,
+    },
+  });
   console.log(data);
 
-  const dataBarChart = [
-    { name: "Geeksforgeeks", students: 400 },
-    { name: "Technical scripter", students: 700 },
-    { name: "Geek-i-knack", students: 200 },
-    { name: "Geek-o-mania", students: 1000 },
-  ];
-  const dataLineChart = [
-    { name: "Geeksforgeeks", students: 400 },
-    { name: "Technical scripter", students: 700 },
-    { name: "Geek-i-knack", students: 200 },
-    { name: "Geek-o-mania", students: 1000 },
-  ];
-  const handleChange = (value: string) => {
-    console.log(`selected ${value}`);
+  const paginationConfig: TablePaginationConfig = {
+    total: data?.race_results_aggregate.aggregate?.count,
+    pageSize: size,
+    current: page,
+    showSizeChanger: true,
+    onChange: (p, s) =>
+      setSearchParams((params) => {
+        params.set("page", String(p));
+        params.set("size", String(s));
+        return params;
+      }),
+    onShowSizeChange: (p, s) =>
+      setSearchParams((params) => {
+        params.set("page", String(p));
+        params.set("size", String(s));
+        return params;
+      }),
+    showTotal: (total) => (
+      <span style={{ color: "#919EAB" }}>{`${total} kết quả`}</span>
+    ),
   };
-  const onSearch = (value: string) => console.log(value);
-
   return (
-    <div style={{ padding: "12px 50px 24px", backgroundColor: "#f9fafb" }}>
-      <Space direction="vertical" style={{ width: "100%" }}>
-        <Row gutter={[16, 16]}>
-          <Col span={24} className={styles.cardContainer}>
-            <Search
-              size="large"
-              placeholder="Tìm kiếm tay lái, đội tham gia, cuộc đua,..."
-              onSearch={onSearch}
-              style={{ width: 660 }}
-            />
+    <Space direction="vertical" className={styles.container}>
+      <Row gutter={[16, 16]}>
+        <Col span={24} className={styles.card}>
+          <Col span={24}>
+            <Space size="middle">
+              <Typography.Title
+                level={1}
+                style={{
+                  fontWeight: 600,
+                  color: "#E10600",
+                  textTransform: "uppercase",
+                }}
+              >
+                Formula 1 Dashboard
+              </Typography.Title>
+              <Image src={Formula1Icon} preview={false} width={70} />
+            </Space>
           </Col>
           <Col span={24}>
-            <Row gutter={[16, 16]}>
-              <Col span={12} className={styles.cardContainer}>
-                <BarChart width={500} height={340} data={dataBarChart}>
-                  <Bar dataKey="students" fill="green" />
-                  <XAxis dataKey="name" />
-                  <YAxis />
-                </BarChart>
-              </Col>
-              <Col span={12} className={styles.cardContainer}>
-                <LineChart width={500} height={300} data={dataLineChart}>
-                  <XAxis dataKey="name" />
-                  <YAxis />
-                  <CartesianGrid stroke="#eee" strokeDasharray="5 5" />
-                  <Line type="monotone" dataKey="uv" stroke="#8884d8" />
-                  <Line type="monotone" dataKey="pv" stroke="#82ca9d" />
-                </LineChart>
-              </Col>
-            </Row>
+            <Space size="small">
+              <Space direction="vertical" size="small">
+                <Typography.Text strong className={styles.label}>
+                  Tìm kiếm
+                </Typography.Text>
+                <Input.Search
+                  size="large"
+                  allowClear
+                  placeholder="Nhập tên tay lái, đội tham gia, nơi tổ chức cuộc đua"
+                  style={{ width: 600 }}
+                  onChange={debounce((e) => {
+                    setSearchParams((params) => {
+                      params.set("keyword", e.target.value);
+                      return params;
+                    });
+                  }, 500)}
+                />
+              </Space>
+              <Space direction="vertical" size="small">
+                <Typography.Text strong className={styles.label}>
+                  Chọn năm tổ chức
+                </Typography.Text>
+                <Select
+                  size="large"
+                  style={{ width: 230 }}
+                  value={raceYear}
+                  onChange={(raceYear) =>
+                    setSearchParams((params) => {
+                      params.set("raceYear", String(raceYear));
+                      return params;
+                    })
+                  }
+                  options={getRaceYear?.race_year.map((item) => ({
+                    label: item.year,
+                    value: item.year,
+                  }))}
+                />
+              </Space>
+            </Space>
           </Col>
-          <Col span={24} className={styles.cardContainer}>
-            <div
-              style={{
-                display: "flex",
-                flexDirection: "row",
-                justifyContent: "space-between",
-                alignItems: "center",
-              }}
-            >
-              <Typography.Title level={2} style={{ padding: "0 12px" }}>
-                2023 RACE RESULTS
-              </Typography.Title>
-              <Select
-                style={{ width: 230 }}
-                placeholder="Chọn năm tổ chức cuộc đua"
-                onChange={handleChange}
-                options={getRaceYear?.race_year.map((item) => ({
-                  label: item.year,
-                  value: item.year,
-                }))}
-              />
-            </div>
-            <TableList loading={loading} data={data?.race_results} />
-          </Col>
-        </Row>
-      </Space>
-    </div>
+        </Col>
+
+        <Col span={24} className={styles.card}>
+          <LapsChart data={data?.race_results} loading={loading} />
+        </Col>
+        <Col span={24} className={styles.card}>
+          <TableList
+            title={`${raceYear} RACE RESULTS`}
+            loading={loading}
+            data={data?.race_results}
+            paginationConfig={paginationConfig}
+          />
+        </Col>
+      </Row>
+    </Space>
   );
 };
 
