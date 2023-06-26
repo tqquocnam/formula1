@@ -14,7 +14,11 @@ const createApolloClient = () => {
 
   const httpLink = new HttpLink({
     // uri: process.env.GRAPHQL_ENDPOINT || process.env.REACT_PUBLIC_GRAPHQL_ENDPOINT
-    uri: "https://rickandmortyapi.com/graphql", // Server URL (must be absolute)
+    uri: "https://avocado.hasura.app/v1/graphql", // Server URL (must be absolute)
+    headers: {
+      "x-hasura-admin-secret":
+        "jMOhNRW248jnx6I2gIYCRWHMCI2GcbEaT3CVNjiuJsWUgi0R3GgXs1x7UhEWdaZx",
+    },
   });
 
   return new ApolloClient({

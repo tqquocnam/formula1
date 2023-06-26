@@ -5,15 +5,16 @@ import "./index.css";
 // import { ApolloProvider } from "@apollo/client";
 import createApolloClient from "./services/apolloClientService.tsx";
 import { BrowserRouter } from "react-router-dom";
+import { ApolloProvider } from "@apollo/client";
 
-// const client = createApolloClient();
+const client = createApolloClient();
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <React.StrictMode>
-    {/* <ApolloProvider client={client}> */}
-    <BrowserRouter>
-      <App />
-    </BrowserRouter>
-    {/* </ApolloProvider> */}
+    <ApolloProvider client={client}>
+      <BrowserRouter>
+        <App />
+      </BrowserRouter>
+    </ApolloProvider>
   </React.StrictMode>
 );
