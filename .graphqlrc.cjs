@@ -1,13 +1,14 @@
 const dotenv = require("dotenv");
 
 dotenv.config();
-const { AVOCADO_ENDPOINT, AVOCADO_SECRET } = process.env;
-
 module.exports = {
   schema: [
     {
-      [AVOCADO_ENDPOINT]: {
-        headers: { "x-hasura-admin-secret": AVOCADO_SECRET },
+      ["https://avocado.hasura.app/v1/graphql"]: {
+        headers: {
+          "x-hasura-admin-secret":
+            "jMOhNRW248jnx6I2gIYCRWHMCI2GcbEaT3CVNjiuJsWUgi0R3GgXs1x7UhEWdaZx",
+        },
       },
     },
   ],
