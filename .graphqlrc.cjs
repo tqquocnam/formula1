@@ -1,10 +1,7 @@
-const dotenv = require("dotenv");
-
-dotenv.config();
 module.exports = {
   schema: [
     {
-      ["https://avocado.hasura.app/v1/graphql"]: {
+      "https://avocado.hasura.app/v1/graphql": {
         headers: {
           "x-hasura-admin-secret":
             "jMOhNRW248jnx6I2gIYCRWHMCI2GcbEaT3CVNjiuJsWUgi0R3GgXs1x7UhEWdaZx",
@@ -57,15 +54,7 @@ module.exports = {
             extension: ".generated.ts",
             baseTypesPath: "sdk/gql/types.ts",
           },
-          plugins: [
-            "typescript-operations",
-            "typed-document-node",
-            {
-              add: {
-                content: "/* eslint-disable */",
-              },
-            },
-          ],
+          plugins: ["typescript-operations", "typed-document-node"],
           config: {
             skipTypename: false,
             withHooks: true,

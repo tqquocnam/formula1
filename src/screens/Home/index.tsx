@@ -7,6 +7,7 @@ import {
   Typography,
   Input,
   Image,
+  Layout,
 } from "antd";
 
 import { gql, useQuery } from "@apollo/client";
@@ -109,80 +110,82 @@ const Home = () => {
     ),
   };
   return (
-    <Space direction="vertical" className={styles.container}>
-      <Row gutter={[16, 16]}>
-        <Col span={24} className={styles.card}>
-          <Col span={24}>
-            <Space size="middle">
-              <Typography.Title
-                level={1}
-                style={{
-                  fontWeight: 600,
-                  color: "#E10600",
-                  textTransform: "uppercase",
-                }}
-              >
-                Formula 1 Dashboard
-              </Typography.Title>
-              <Image src={Formula1Icon} preview={false} width={70} />
-            </Space>
-          </Col>
-          <Col span={24}>
-            <Space size="small">
-              <Space direction="vertical" size="small">
-                <Typography.Text strong className={styles.label}>
-                  Tìm kiếm
-                </Typography.Text>
-                <Input.Search
-                  size="large"
-                  allowClear
-                  placeholder="Nhập tên tay lái, đội tham gia, nơi tổ chức cuộc đua"
-                  style={{ width: 600 }}
-                  onChange={debounce((e) => {
-                    setSearchParams((params) => {
-                      params.set("keyword", e.target.value);
-                      return params;
-                    });
-                  }, 500)}
-                />
+    <Layout>
+      <Space direction="vertical" className={styles.container}>
+        <Row gutter={[16, 16]}>
+          <Col span={24} className={styles.card}>
+            <Col span={24}>
+              <Space size="middle">
+                <Typography.Title
+                  level={2}
+                  style={{
+                    fontWeight: 600,
+                    color: "#E10600",
+                    textTransform: "uppercase",
+                  }}
+                >
+                  Formula 1 Dashboard
+                </Typography.Title>
+                <Image src={Formula1Icon} preview={false} width={64} />
               </Space>
-              <Space direction="vertical" size="small">
-                <Typography.Text strong className={styles.label}>
-                  Chọn năm tổ chức
-                </Typography.Text>
-                <Select
-                  size="large"
-                  style={{ width: 230 }}
-                  value={raceYear}
-                  onChange={(raceYear) =>
-                    setSearchParams((params) => {
-                      params.set("raceYear", String(raceYear));
-                      return params;
-                    })
-                  }
-                  options={getRaceYear?.race_year.map((item) => ({
-                    label: item.year,
-                    value: item.year,
-                  }))}
-                />
+            </Col>
+            <Col span={24}>
+              <Space size="small">
+                <Space direction="vertical" size="small">
+                  <Typography.Text strong className={styles.label}>
+                    Tìm kiếm
+                  </Typography.Text>
+                  <Input.Search
+                    size="large"
+                    allowClear
+                    placeholder="Nhập tên tay lái, đội tham gia, nơi tổ chức cuộc đua"
+                    style={{ width: 600 }}
+                    onChange={debounce((e) => {
+                      setSearchParams((params) => {
+                        params.set("keyword", e.target.value);
+                        return params;
+                      });
+                    }, 500)}
+                  />
+                </Space>
+                <Space direction="vertical" size="small">
+                  <Typography.Text strong className={styles.label}>
+                    Chọn năm tổ chức
+                  </Typography.Text>
+                  <Select
+                    size="large"
+                    style={{ width: 230 }}
+                    value={raceYear}
+                    onChange={(raceYear) =>
+                      setSearchParams((params) => {
+                        params.set("raceYear", String(raceYear));
+                        return params;
+                      })
+                    }
+                    options={getRaceYear?.race_year.map((item) => ({
+                      label: item.year,
+                      value: item.year,
+                    }))}
+                  />
+                </Space>
               </Space>
-            </Space>
+            </Col>
           </Col>
-        </Col>
 
-        <Col span={24} className={styles.card}>
-          <LapsChart data={data?.race_results} loading={loading} />
-        </Col>
-        <Col span={24} className={styles.card}>
-          <TableList
-            title={`${raceYear} RACE RESULTS`}
-            loading={loading}
-            data={data?.race_results}
-            paginationConfig={paginationConfig}
-          />
-        </Col>
-      </Row>
-    </Space>
+          <Col span={24} className={styles.card}>
+            <LapsChart data={data?.race_results} loading={loading} />
+          </Col>
+          <Col span={24} className={styles.card}>
+            <TableList
+              title={`${raceYear} RACE RESULTS`}
+              loading={loading}
+              data={data?.race_results}
+              paginationConfig={paginationConfig}
+            />
+          </Col>
+        </Row>
+      </Space>
+    </Layout>
   );
 };
 

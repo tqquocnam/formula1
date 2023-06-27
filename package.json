@@ -8,7 +8,7 @@
     "build": "vite build",
     "lint": "eslint src --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
-    "codegen": "graphql-codegen --require dotenv/config"
+    "codegen": "graphql-codegen"
   },
   "dependencies": {
     "@ant-design/icons": "^5.1.4",

@@ -11,8 +11,9 @@ import {
 } from "recharts";
 import { renderLapsChartToolTip } from "../ultis/chart";
 import { FC } from "react";
-import { Spin } from "antd";
-
+import { Empty, Spin } from "antd";
+import styles from "../screens/Home/index.module.css";
+import { isEmpty } from "lodash";
 interface LapsChartProps {
   data: GetRaceResultsQuery["race_results"][number];
   loading?: boolean;
@@ -22,7 +23,9 @@ const LapsChart: FC<LapsChartProps> = ({ data, loading }) => {
   return (
     <div>
       {loading ? (
-        <Spin />
+        <Spin className={styles.stylesSpin} />
+      ) : isEmpty(data) ? (
+        <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
       ) : (
         <ResponsiveContainer height={300}>
           <BarChart

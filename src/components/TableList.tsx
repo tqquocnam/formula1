@@ -6,13 +6,15 @@ import {
 } from "antd";
 import { GetRaceResultsQuery } from "../screens/Home/index.generated";
 import { FC, ReactNode } from "react";
-
+import styles from "../screens/Home/index.module.css";
 interface TableListProps {
   data: GetRaceResultsQuery["race_results"][number];
   loading?: boolean;
   paginationConfig: TablePaginationConfig;
   title: ReactNode;
 }
+
+const { Text } = Typography;
 const TableList: FC<TableListProps> = ({
   data,
   loading,
@@ -23,34 +25,38 @@ const TableList: FC<TableListProps> = ({
     GetRaceResultsQuery["race_results"][number]
   > = [
     {
-      title: "GRAND PRIX",
+      title: <Text className={styles.titleOfRowTable}>GRAND PRIX</Text>,
       width: "20%",
       dataIndex: "venue",
+      render: (value) => <Text strong>{value}</Text>,
     },
     {
-      title: "DATE",
+      title: <Text className={styles.titleOfRowTable}>DATE</Text>,
       width: "10%",
       dataIndex: "date",
     },
     {
-      title: "WINNER",
+      title: <Text className={styles.titleOfRowTable}>WINNER</Text>,
       width: "20%",
       dataIndex: "winner",
+      render: (value) => <Text strong>{value}</Text>,
     },
     {
-      title: "CAR",
+      title: <Text className={styles.titleOfRowTable}>CAR</Text>,
       width: "20%",
       dataIndex: "car",
     },
     {
-      title: "LAPS",
+      title: <Text className={styles.titleOfRowTable}>LAPS</Text>,
       width: "10%",
       dataIndex: "laps",
+      render: (value) => <Text strong>{value}</Text>,
     },
     {
-      title: "TIME",
+      title: <Text className={styles.titleOfRowTable}>TIME</Text>,
       width: "10%",
       dataIndex: "time",
+      render: (value) => <Text strong>{value}</Text>,
     },
   ];
   return (
@@ -58,7 +64,7 @@ const TableList: FC<TableListProps> = ({
       showHeader
       caption={
         <Typography.Title
-          level={2}
+          level={3}
           style={{
             textAlign: "start",
             padding: "0 12px",
