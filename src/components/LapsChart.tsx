@@ -53,7 +53,7 @@ const LapsChart: FC<LapsChartProps> = ({ data, loading }) => {
                 color="#637381"
               />
             </YAxis>
-            <Tooltip formatter={renderLapsChartToolTip} />
+            <Tooltip />
           </BarChart>
         </ResponsiveContainer>
       )}

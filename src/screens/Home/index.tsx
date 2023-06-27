@@ -133,12 +133,12 @@ const Home = () => {
               <Space size="small">
                 <Space direction="vertical" size="small">
                   <Typography.Text strong className={styles.label}>
-                    Tìm kiếm
+                    Search
                   </Typography.Text>
                   <Input.Search
                     size="large"
                     allowClear
-                    placeholder="Nhập tên tay lái, đội tham gia, nơi tổ chức cuộc đua"
+                    placeholder="Enter the driver's name, participating team, race venue"
                     style={{ width: 600 }}
                     onChange={debounce((e) => {
                       setSearchParams((params) => {
@@ -150,7 +150,7 @@ const Home = () => {
                 </Space>
                 <Space direction="vertical" size="small">
                   <Typography.Text strong className={styles.label}>
-                    Chọn năm tổ chức
+                    Choose the year of the race
                   </Typography.Text>
                   <Select
                     size="large"
