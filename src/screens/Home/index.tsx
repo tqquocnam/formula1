@@ -106,7 +106,7 @@ const Home = () => {
         return params;
       }),
     showTotal: (total) => (
-      <span style={{ color: "#919EAB" }}>{`${total} kết quả`}</span>
+      <span style={{ color: "#919EAB" }}>{`${total} results`}</span>
     ),
   };
   return (
